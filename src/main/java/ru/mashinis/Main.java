@@ -13,7 +13,7 @@ public class Main {
         InputView view = new InputView();
         InputController controller = new InputController(model, view);
 
-        // Запуск обработки ввода пользователя
-        controller.processUserInput();
+        // Запуск приложения
+        controller.start();
     }
 }

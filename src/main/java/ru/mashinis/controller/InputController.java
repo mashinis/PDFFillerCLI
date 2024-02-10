@@ -2,7 +2,9 @@ package ru.mashinis.controller;
 
 import ru.mashinis.model.FormField;
 import ru.mashinis.model.InputModel;
+import ru.mashinis.model.database.UserModel;
 import ru.mashinis.view.InputView;
+import ru.mashinis.view.UserView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,67 +18,63 @@ public class InputController {
     private InputView view;
     private Scanner scanner;
     private List<FormField> formFields;
+    private UserView userView;
+    private UserModel userModel;
+    private UserController userController;
 
     public InputController(InputModel model, InputView view) {
         this.model = model;
         this.view = view;
         this.scanner = new Scanner(System.in);
         this.formFields = new ArrayList<>();
+        this.userView = new UserView();
+        this.userModel = new UserModel();
     }
 
     // Метод обработки ввода пользователя в бесконечном цикле
-    public void processUserInput() {
-        String userInput;
+    public void start() {
+        Scanner scanner = new Scanner(System.in);
 
-        do {
-            view.printMessage(
-                            "Заполните форму PDF.\n" +
-                            "\\0 - Последовательное заполнение полей формы.\n" +
-                            "\\exit - Выход из приложения;\n" +
-                            "\\save - Сохранить данные в БД;\n" +
-                            "\\edit (номер поля) - Редактировать определенное поле;\n" +
-                            "\\pdf (имя файла) - Сохранить форму в PDF файл;\n" +
-                            "\\list - Список всех полей формы."
-            );
+        while (true) {
+            view.printMenu();
+            String choice = scanner.nextLine();
+            choice.trim();
 
-            // Чтение ввода пользователя
-            userInput = scanner.nextLine();
-            model.setUserInput(userInput);
-
-            // Обработка команд
-            processCommands();
-
-        } while (!userInput.equalsIgnoreCase("\\exit"));
-
-        // Закрытие сканнера
-        scanner.close();
-    }
-
-    // Метод для обработки команд
-    private void processCommands() {
-        String userInput = model.getUserInput();
-
-        if (userInput.equalsIgnoreCase("\\exit")) {
-            view.printMessage("Выход из приложения.");
-            return;
-        }
-
-        if (userInput.equalsIgnoreCase("\\0")) {
-            sequentialFieldFilling();
-        } else if (userInput.equalsIgnoreCase("\\save")) {
-            saveDataToDatabase();
-        } else if (userInput.toLowerCase().startsWith("\\edit")) {
-            editField(userInput);
-        } else if (userInput.toLowerCase().startsWith("\\pdf")) {
-            saveFormToPDF(userInput);
-        } else if (userInput.equalsIgnoreCase("\\list")) {
-            displayFormFields();
-        } else {
-            view.printMessage("Неверная команда. Попробуйте еще раз.");
+            switch (choice.toLowerCase()) {
+                case "\\exit":
+                    view.printMessage("Выход из приложения.");
+                    scanner.close();
+                    System.exit(0);
+                case "\\all":
+                    sequentialFieldFilling();
+                    break;
+                case "\\users":
+                    userMenu();
+                    break;
+                case "\\save":
+                    saveDataToDatabase();
+                    break;
+                case "\\edit":
+                    editField(choice);
+                    break;
+                case "\\pdf":
+                    saveFormToPDF(choice);
+                    break;
+                case "\\list":
+                    displayFormFields();
+                    break;
+                default:
+                    view.printMessage("Неверная команда. Попробуйте еще раз.");
+            }
         }
     }
 
-    // Новый метод для вывода списка всех полей формы
+    private void userMenu() {
+        userController = new UserController(userView, userModel);
+        userController.handleUserInput();
+    }
+
+    // Метод для вывода списка всех полей формы
     private void displayFormFields() {
         if (formFields.isEmpty()) {
             view.printMessage("Форма не содержит полей.");
