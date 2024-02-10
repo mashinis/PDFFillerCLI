@@ -1,20 +1,15 @@
 package ru.mashinis.model.database;
 
-import ru.mashinis.model.User;
+import ru.mashinis.model.Field;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class UserModel {
+public class FieldModel {
     private static final String PROPERTIES_FILE = "properties/application.properties";
     private static String url;
     private static String username;
@@ -36,13 +31,13 @@ public class UserModel {
         }
     }
 
-    public static void saveUser(User user) {
+    public void saveField(Field field) {
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "INSERT INTO users (user_name, user_login, password) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO fields (field_name, field_alias, form_id) VALUES (?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, user.getUsername());
-                statement.setString(2, user.getLogin());
-                statement.setString(3, user.getPassword());
+                statement.setString(1, field.getName());
+                statement.setString(2, field.getAlias());
+                statement.setInt(3, field.getFormId());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -50,49 +45,50 @@ public class UserModel {
         }
     }
 
-    public static List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
+    public List<Field> getAllFields() {
+        List<Field> fields = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "SELECT * FROM users";
+            String sql = "SELECT * FROM fields ORDER BY id";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
                         int id = Integer.parseInt(resultSet.getString("id"));
-                        String username = resultSet.getString("user_name");
-                        String userLogin = resultSet.getString("user_login");
-                        String password = resultSet.getString("password");
-                        User user = new User(username, userLogin, password);
-                        user.setUserId(id);
-                        users.add(user);
+                        String fieldName = resultSet.getString("field_name");
+                        String fieldAlias = resultSet.getString("field_alias");
+                        int formId = resultSet.getInt("form_id");
+                        Field field = new Field(fieldName, fieldAlias, formId);
+                        field.setId(id);
+                        fields.add(field);
                     }
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return users;
+        return fields;
     }
 
-    public static User getUserById(int userId) {
-        String sql = "SELECT * FROM users WHERE id = ?";
+    public Field getFieldById(int fieldId) {
+        String sql = "SELECT * FROM fields WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, userId);
+            statement.setInt(1, fieldId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    String username = resultSet.getString("user_name");
-                    String userLogin = resultSet.getString("user_login");
-                    String password = resultSet.getString("password");
-                    User user = new User(username, userLogin, password);
-                    user.setUserId(userId);
-                    return user;
+                    int id = Integer.parseInt(resultSet.getString("id"));
+                    String fieldName = resultSet.getString("field_name");
+                    String fieldAlias = resultSet.getString("field_alias");
+                    int formId = resultSet.getInt("form_id");
+                    Field field = new Field(fieldName, fieldAlias, formId);
+                    field.setId(id);
+                    return field;
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return null; // В случае ошибки или отсутствия пользователя
+        return null; // В случае ошибки или отсутствия поля
     }
 }

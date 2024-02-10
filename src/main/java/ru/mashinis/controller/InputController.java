@@ -2,7 +2,9 @@ package ru.mashinis.controller;
 
 import ru.mashinis.model.FormField;
 import ru.mashinis.model.InputModel;
+import ru.mashinis.model.database.FieldModel;
 import ru.mashinis.model.database.UserModel;
+import ru.mashinis.view.FieldView;
 import ru.mashinis.view.InputView;
 import ru.mashinis.view.UserView;
 
@@ -21,6 +23,9 @@ public class InputController {
     private UserView userView;
     private UserModel userModel;
     private UserController userController;
+    private FieldView fieldView;
+    private FieldModel fieldModel;
+    private FieldController fieldController;
 
     public InputController(InputModel model, InputView view) {
         this.model = model;
@@ -29,6 +34,8 @@ public class InputController {
         this.formFields = new ArrayList<>();
         this.userView = new UserView();
         this.userModel = new UserModel();
+        this.fieldView = new FieldView();
+        this.fieldModel = new FieldModel();
     }
 
     // Метод обработки ввода пользователя в бесконечном цикле
@@ -45,6 +52,9 @@ public class InputController {
                     view.printMessage("Выход из приложения.");
                     scanner.close();
                     System.exit(0);
+                case "\\fill":
+                    fillForm();
+                    break;
                 case "\\all":
                     sequentialFieldFilling();
                     break;
@@ -61,12 +71,17 @@ public class InputController {
                     saveFormToPDF(choice);
                     break;
                 case "\\list":
-                    displayFormFields();
+                    //displayFormFields();
                     break;
                 default:
                     view.printMessage("Неверная команда. Попробуйте еще раз.");
             }
         }
+    }
+
+    private void fillForm() {
+        fieldController = new FieldController(fieldView, fieldModel);
+        fieldController.handleFieldInput();
     }
 
     private void userMenu() {
@@ -75,16 +90,16 @@ public class InputController {
     }
 
     // Метод для вывода списка всех полей формы
-    private void displayFormFields() {
-        if (formFields.isEmpty()) {
-            view.printMessage("Форма не содержит полей.");
-        } else {
-            view.printMessage("Список всех полей формы:");
-            for (int i = 0; i < formFields.size(); i++) {
-                view.printMessage((i + 1) + ". " + formFields.get(i));
-            }
-        }
-    }
+//    private void displayFormFields() {
+//        if (formFields.isEmpty()) {
+//            view.printMessage("Форма не содержит полей.");
+//        } else {
+//            view.printMessage("Список всех полей формы:");
+//            for (int i = 0; i < formFields.size(); i++) {
+//                view.printMessage((i + 1) + ". " + formFields.get(i));
+//            }
+//        }
+//    }
 
     // Логика для последовательного заполнения полей формы
     private void sequentialFieldFilling() {

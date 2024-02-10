@@ -47,7 +47,6 @@ public class UserController {
     }
 
     private void displayUser(String input) {
-        //String[] s = input.split(" ");
 
         if (input.isEmpty()) {
             view.printMessage("Не верный формат строки.");
