@@ -1,2 +1,4 @@
-package ru.mashinis.model.database;public class FieldValueModel {
+package ru.mashinis.model.database;
+
+public class FieldValueModel {
 }

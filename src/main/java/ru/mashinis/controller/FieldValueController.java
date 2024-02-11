@@ -1,2 +1,4 @@
-package ru.mashinis.controller;public class FieldValueController {
+package ru.mashinis.controller;
+
+public class FieldValueController {
 }
