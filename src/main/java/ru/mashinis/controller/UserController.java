@@ -92,4 +92,28 @@ public class UserController {
             }
         }
     }
+
+    // Вход пользователя
+    public void loginUser() {
+        Scanner scanner = new Scanner(System.in);
+
+        view.printMessage("Введите логин:");
+        String login = scanner.nextLine();
+
+        view.printMessage("Введите пароль:");
+        String password = scanner.nextLine();
+
+        if (validateUserCredentials(login, password)) {
+            view.printMessage("Вход выполнен успешно!");
+        } else {
+            view.printMessage("Неверные логин или пароль. Попробуйте еще раз.");
+        }
+    }
+
+    private boolean validateUserCredentials(String login, String password) {
+        // Здесь вы можете добавить логику проверки логина и пароля в вашей базе данных
+        // Например, использовать метод из UserModel для проверки существования пользователя
+        // и сопоставления введенного пароля с хэшированным паролем в базе данных.
+        return userModel.validateUserCredentials(login, password);
+    }
 }

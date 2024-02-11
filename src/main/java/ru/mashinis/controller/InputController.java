@@ -2,8 +2,10 @@ package ru.mashinis.controller;
 
 import ru.mashinis.model.FormField;
 import ru.mashinis.model.InputModel;
+import ru.mashinis.model.database.AuthModel;
 import ru.mashinis.model.database.FieldModel;
 import ru.mashinis.model.database.UserModel;
+import ru.mashinis.view.AuthView;
 import ru.mashinis.view.FieldView;
 import ru.mashinis.view.InputView;
 import ru.mashinis.view.UserView;
@@ -26,6 +28,9 @@ public class InputController {
     private FieldView fieldView;
     private FieldModel fieldModel;
     private FieldController fieldController;
+    private AuthController authController;
+    private AuthModel authModel;
+    private AuthView authView;
 
     public InputController(InputModel model, InputView view) {
         this.model = model;
@@ -36,12 +41,30 @@ public class InputController {
         this.userModel = new UserModel();
         this.fieldView = new FieldView();
         this.fieldModel = new FieldModel();
+        this.authModel = new AuthModel();
+        this.authView = new AuthView();
     }
 
     // Метод обработки ввода пользователя в бесконечном цикле
     public void start() {
         Scanner scanner = new Scanner(System.in);
 
+        authController = new AuthController(authModel, authView);
+
+        while (true) {
+            authController.handleUserAuthentication();
+
+            if (authController.isAuthenticated()) {
+                // Если аутентификация успешна, переходим к главному меню
+                handleMainMenu();
+            } else {
+                // В противном случае, возвращаемся к аутентификации
+                authView.displayErrorMessage("Неверный логин или пароль. Попробуйте еще раз.");
+            }
+        }
+    }
+
+    private void handleMainMenu() {
         while (true) {
             view.printMenu();
             String choice = scanner.nextLine();

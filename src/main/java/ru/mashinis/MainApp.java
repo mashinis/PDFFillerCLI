@@ -7,7 +7,7 @@ import ru.mashinis.view.InputView;
 /**
  * Класс Main для запуска приложения
  */
-public class Main {
+public class MainApp {
     public static void main(String[] args) {
         InputModel model = new InputModel();
         InputView view = new InputView();

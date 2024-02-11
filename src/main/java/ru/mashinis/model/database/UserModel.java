@@ -95,4 +95,21 @@ public class UserModel {
 
         return null; // В случае ошибки или отсутствия пользователя
     }
+
+    public boolean validateUserCredentials(String login, String password) {
+        String sql = "SELECT * FROM users WHERE user_login = ? AND password = ?";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, login);
+            statement.setString(2, password);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next(); // Вернет true, если пользователь существует и пароль верен
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false; // В случае ошибки или отсутствия пользователя
+    }
 }
