@@ -6,6 +6,9 @@ public class Field {
     private String alias;
     private int formId;
 
+    public Field() {
+    }
+
     public Field(String name, String alias, int formId) {
         this.name = name;
         this.alias = alias;

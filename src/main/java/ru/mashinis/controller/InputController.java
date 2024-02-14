@@ -103,7 +103,7 @@ public class InputController {
     }
 
     private void fillForm() {
-        fieldController = new FieldController(fieldView, fieldModel);
+        fieldController = new FieldController(fieldView, fieldModel, authController);
         fieldController.handleFieldInput();
     }
 

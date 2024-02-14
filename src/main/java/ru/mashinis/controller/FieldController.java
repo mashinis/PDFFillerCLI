@@ -3,25 +3,34 @@ package ru.mashinis.controller;
 import ru.mashinis.model.Field;
 import ru.mashinis.model.User;
 import ru.mashinis.model.database.FieldModel;
+import ru.mashinis.model.database.FieldValueModel;
+import ru.mashinis.view.FieldValueView;
 import ru.mashinis.view.FieldView;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class FieldController {
-    private final FieldView view;
+    private final FieldView fieldView;
     private final FieldModel fieldModel;
+    private FieldValueView fieldValueView;
+    private FieldValueModel fieldValueModel;
+    private FieldValueController fieldValueController;
+    private AuthController authController;
 
-    public FieldController(FieldView view, FieldModel fieldModel) {
-        this.view = view;
+    public FieldController(FieldView fieldView, FieldModel fieldModel, AuthController authController) {
+        this.fieldView = fieldView;
         this.fieldModel = fieldModel;
+        this.fieldValueView = new FieldValueView();
+        this.fieldValueModel = new FieldValueModel();
+        this.authController = authController;
     }
 
     public void handleFieldInput() {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            view.printMenu();
+            fieldView.printMenu();
             String input = scanner.nextLine();
             String[] s = input.toLowerCase().split(" ");
             String choice = s[0].trim();
@@ -30,10 +39,10 @@ public class FieldController {
                 case "\\menu":
                     return;  // Возврат в главное меню
                 case "\\list": // Список всех полей
-                    listField();
+                    printField();
                     break;
                 case "\\all": // Последовательное заполнение полей
-                    //fillAllField();
+                    fillAllField();
                     break;
                 case "\\edit": // Заполнить поле по его id
                     //fillByIdField(s[1].trim());
@@ -42,20 +51,30 @@ public class FieldController {
                     scanner.close();
                     System.exit(0);
                 default:
-                    view.printMessage("Неверная команда. Попробуйте еще раз.");
+                    fieldView.printMessage("Неверная команда. Попробуйте еще раз.");
             }
         }
     }
 
-    private void listField() {
+    private void fillAllField() {
+        fieldValueController = new FieldValueController(fieldValueView, fieldValueModel, authController);
+        fieldValueController.sequentFillForm();
+    }
+
+    private void printField() {
         List<Field> fields = fieldModel.getAllFields();
         if (fields.isEmpty()) {
-            view.printMessage("Нет полей форм.");
+            fieldView.printMessage("Нет полей форм.");
         } else {
-            view.printMessage("Список полей:");
+            fieldView.printMessage("Список полей:");
             for (Field field : fields) {
-                view.printMessage(field.toString());
+                fieldView.printMessage(field.toString());
             }
         }
+    }
+
+    private List<Field> listField() {
+        List<Field> list = fieldModel.getAllFields();
+        return list; // Пока не обрабатываю условие, что может быть несколько форм
     }
 }

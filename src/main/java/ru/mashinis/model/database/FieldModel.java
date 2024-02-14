@@ -91,4 +91,28 @@ public class FieldModel {
 
         return null; // В случае ошибки или отсутствия поля
     }
+
+    public List<Field> getFieldsByFormId(int formId) {
+        List<Field> fields = new ArrayList<>();
+        String sql = "SELECT * FROM fields WHERE form_id = ? ORDER BY id";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, formId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Field field = new Field();  // Создаем новый объект Field для каждой строки
+                    int id = resultSet.getInt("id");
+                    String fieldName = resultSet.getString("field_name");
+                    field.setId(id);
+                    field.setName(fieldName);
+                    fields.add(field);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return fields;
+    }
+
 }

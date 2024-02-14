@@ -73,7 +73,7 @@ public class AuthController {
         // Нет обработки момента, если пользователь с таким логином существует
         authenticatedUser = authModel.registerUser(username, userLogin, password);
         if (authenticatedUser == null) {
-            view.printMessage("Ошибка при регистрации! Повторите попытку.");
+            view.printMessage("Ошибка при регистрации! Повторите попытку.\n");
         } else {
             isAuthenticated = authModel.authenticateUser(userLogin, password);
             view.displaySuccessMessage("Зарегистрирован новый пользователь! " + authenticatedUser.getUsername());
@@ -83,5 +83,9 @@ public class AuthController {
 
     public boolean isAuthenticated() {
         return isAuthenticated;
+    }
+
+    public User getAuthenticatedUser() {
+        return authenticatedUser;
     }
 }
