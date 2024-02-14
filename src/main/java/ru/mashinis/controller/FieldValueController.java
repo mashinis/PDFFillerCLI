@@ -5,6 +5,7 @@ import ru.mashinis.model.FieldValue;
 import ru.mashinis.model.User;
 import ru.mashinis.model.database.FieldModel;
 import ru.mashinis.model.database.FieldValueModel;
+import ru.mashinis.pdfgeneration.CyrillicPdfFormFiller;
 import ru.mashinis.view.FieldValueView;
 
 import java.util.ArrayList;
@@ -34,17 +35,13 @@ public class FieldValueController {
     }
 
 
-    public void handleFieldInput() {
+    public void fillPdfForm() {
         fieldValueList = fieldValueModel.getFormInstanceId(userId, userInstanceMaxId);
-        int count = 1;
         if (fieldValueList == null) {
             fieldValueView.printMessage("Запись отсутствует!");
         } else {
-            for (FieldValue fieldValue : fieldValueList) {
-                fieldValueView.printMessage(count + ". " + fieldValue.getFieldName());
-                //
-
-            }
+            CyrillicPdfFormFiller cyrillicPdfFormFiller = new CyrillicPdfFormFiller();
+            cyrillicPdfFormFiller.fillPdfForm(fieldValueList);
         }
     }
 
@@ -70,7 +67,6 @@ public class FieldValueController {
             String name = field.getName();
             fieldValueView.printMessage(count + ". " + name);
             input = scanner.nextLine();
-            //System.out.println(input + ", " + id + ", " + userId + ", " + formId + ", " + instance);
             fieldValueList.add(new FieldValue(input, id, userId, formId, instance));
             count++;
         }

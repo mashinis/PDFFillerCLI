@@ -36,7 +36,7 @@ public class FieldValueModel {
     public List<FieldValue> getFormInstanceId(int userId, int instanceId) {
         List<FieldValue> list = new ArrayList<>();
         String sql = "SELECT field_values.id, field_values.value, field_values.form_instance_id, " +
-                "fields.field_name, forms.form_name, users.user_name " +
+                "fields.field_name, fields.field_alias, forms.form_name, users.user_name " +
                 "FROM field_values " +
                 "INNER JOIN fields ON field_values.field_id = fields.id " +
                 "INNER JOIN forms ON field_values.form_id = forms.id " +
@@ -55,10 +55,14 @@ public class FieldValueModel {
                     String value = resultSet.getString("value");
                     int instanceId2 = resultSet.getInt("form_instance_id");
                     String fieldName = resultSet.getString("field_name");
+                    String fieldAlias = resultSet.getString("field_alias");
                     String formName = resultSet.getString("form_name");
                     String userName = resultSet.getString("user_name");
 
-                    list.add(new FieldValue(id, value, instanceId2, fieldName, formName, userName));
+                    FieldValue fieldValue = new FieldValue(id, value, instanceId2, fieldName, formName, userName);
+                    fieldValue.setFieldAlias(fieldAlias);
+
+                    list.add(fieldValue);
                 }
                 return list;
             }

@@ -6,9 +6,12 @@ public class FieldValue {
     private int formInstanceId;
     private int fieldId;
     private String fieldName;
+    private String fieldAlias;
+
     private int userId;
     private String formName;
     private String userName;
+
 
     public FieldValue(String value, int fieldId, int userId, int formId, int formInstanceId) {
         this.value = value;
@@ -103,6 +106,14 @@ public class FieldValue {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getFieldAlias() {
+        return fieldAlias;
+    }
+
+    public void setFieldAlias(String fieldAlias) {
+        this.fieldAlias = fieldAlias;
     }
 
     @Override

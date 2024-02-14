@@ -38,8 +38,8 @@ public class FieldController {
             switch (choice.toLowerCase()) {
                 case "\\menu":
                     return;  // Возврат в главное меню
-                case "\\list": // Список всех полей
-                    printField();
+                case "\\pdf": // Список всех полей
+                    fillPdfForm();
                     break;
                 case "\\all": // Последовательное заполнение полей
                     fillAllField();
@@ -61,16 +61,9 @@ public class FieldController {
         fieldValueController.sequentFillForm();
     }
 
-    private void printField() {
-        List<Field> fields = fieldModel.getAllFields();
-        if (fields.isEmpty()) {
-            fieldView.printMessage("Нет полей форм.");
-        } else {
-            fieldView.printMessage("Список полей:");
-            for (Field field : fields) {
-                fieldView.printMessage(field.toString());
-            }
-        }
+    private void fillPdfForm() {
+        fieldValueController = new FieldValueController(fieldValueView, fieldValueModel, authController);
+        fieldValueController.fillPdfForm();
     }
 
     private List<Field> listField() {
