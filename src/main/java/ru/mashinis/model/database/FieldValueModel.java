@@ -1,35 +1,21 @@
 package ru.mashinis.model.database;
 
-import ru.mashinis.model.Field;
+import ru.mashinis.config.DatabaseConfig;
 import ru.mashinis.model.FieldValue;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class FieldValueModel {
-    private static final String PROPERTIES_FILE = "properties/application.properties";
-    private static String url;
-    private static String username;
-    private static String password;
+    private final String dbUrl;
+    private final String dbUsername;
+    private final String dbPassword;
 
-    static {
-        loadDatabaseProperties();
-    }
-
-    private static void loadDatabaseProperties() {
-        Properties properties = new Properties();
-        try (InputStream input = UserModel.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-            properties.load(input);
-            url = properties.getProperty("db.url");
-            username = properties.getProperty("db.username");
-            password = properties.getProperty("db.password");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public FieldValueModel() {
+        this.dbUrl = DatabaseConfig.getUrl();
+        this.dbUsername = DatabaseConfig.getUsername();
+        this.dbPassword = DatabaseConfig.getPassword();
     }
 
     // Вывод всех полей заполненной формы instanceId, пользователя userId,
@@ -44,7 +30,7 @@ public class FieldValueModel {
                 "WHERE field_values.user_id = ? AND field_values.form_instance_id = ? " +
                 "ORDER BY field_values.id;";
 
-        try (Connection connection = DriverManager.getConnection(url, username, password);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, userId);
             statement.setInt(2, instanceId);
@@ -77,7 +63,7 @@ public class FieldValueModel {
     public int getUserMaxInstance(int userId) {
         String sql = "SELECT MAX(form_instance_id) AS max_instance_id FROM field_values WHERE user_id = ?";
 
-        try (Connection connection = DriverManager.getConnection(url, username, password);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, userId);
@@ -95,11 +81,10 @@ public class FieldValueModel {
     }
 
     // Добавляем одну запись в таблицу
-    //  "INSERT INTO fields (field_name, field_alias, form_id) VALUES (?, ?, ?)";
     public void addOneFieldValue(String value, int fieldId, int userId, int formId, int formInstanceId) {
         String sql = "INSERT INTO field_values (value, field_id, user_id, form_id, form_instance_id) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection connection = DriverManager.getConnection(url, username, password);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, value);
             statement.setInt(2, fieldId);
@@ -115,11 +100,12 @@ public class FieldValueModel {
         }
     }
 
+    // Показываем этот метод во время защиты проекта
     // Добавляем все записи. В случае ошибки, не добавляем ни одной!
     public void addFieldValues(List<FieldValue> fieldValuesList) {
         String sql = "INSERT INTO field_values (value, field_id, user_id, form_id, form_instance_id) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
             connection.setAutoCommit(false);  // Отключаем автоматический коммит
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -154,6 +140,24 @@ public class FieldValueModel {
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Ошибка при подключении к базе данных: " + e.getMessage());
+        }
+    }
+
+    // Проверяем, существует такое или нет
+    public boolean isUserInstance(int instance) {
+        String sql = "SELECT * FROM field_values WHERE form_instance_id = ?";
+
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, instance);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next(); // Возвращает true, если есть хотя бы одна запись
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // В случае ошибки
         }
     }
 }

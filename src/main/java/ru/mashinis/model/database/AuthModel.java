@@ -1,37 +1,23 @@
 package ru.mashinis.model.database;
 
 import org.mindrot.jbcrypt.BCrypt;
+import ru.mashinis.config.DatabaseConfig;
 import ru.mashinis.model.User;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
-import java.util.Properties;
 
 public class AuthModel {
-    private static final String PROPERTIES_FILE = "properties/application.properties";
-    private static String url;
-    private static String dbUsername;
-    private static String dbPassword;
+    private final String dbUrl;
+    private final String dbUsername;
+    private final String dbPassword;
 
-    static {
-        loadDatabaseProperties();
-    }
-
-    private static void loadDatabaseProperties() {
-        Properties properties = new Properties();
-        try (InputStream input = AuthModel.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-            properties.load(input);
-            url = properties.getProperty("db.url");
-            dbUsername = properties.getProperty("db.username");
-            dbPassword = properties.getProperty("db.password");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public AuthModel() {
+        this.dbUrl = DatabaseConfig.getUrl();
+        this.dbUsername = DatabaseConfig.getUsername();
+        this.dbPassword = DatabaseConfig.getPassword();
     }
 
     public boolean authenticateUser(String username, String password) {
-        try (Connection connection = DriverManager.getConnection(url, dbUsername, dbPassword)) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
             String sql = "SELECT * FROM users WHERE user_login = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, username);
@@ -57,7 +43,7 @@ public class AuthModel {
             // Хеширование пароля перед сохранением в базу данных
             String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-            try (Connection connection = DriverManager.getConnection(url, dbUsername, dbPassword)) {
+            try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
                 String sql = "INSERT INTO users (user_name, user_login, password) VALUES (?, ?, ?)";
                 try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                     statement.setString(1, username);
@@ -88,7 +74,7 @@ public class AuthModel {
 
     public User getUserByLogin(String login) {
         String sql = "SELECT * FROM users WHERE user_login = ?";
-        try (Connection connection = DriverManager.getConnection(url, dbUsername, dbPassword);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, login);
 
@@ -110,9 +96,9 @@ public class AuthModel {
         return null; // В случае ошибки или отсутствия пользователя
     }
 
-    public static User getUserById(int userId) {
+    public User getUserById(int userId) {
         String sql = "SELECT * FROM users WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(url, dbUsername, dbPassword);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, userId);
 
@@ -135,7 +121,7 @@ public class AuthModel {
 
     private boolean isLoginUnique(String login) {
         String sql = "SELECT COUNT(*) FROM users WHERE user_login = ?";
-        try (Connection connection = DriverManager.getConnection(url, dbUsername, dbPassword);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, login);
 

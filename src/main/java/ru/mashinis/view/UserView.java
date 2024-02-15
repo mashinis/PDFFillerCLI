@@ -1,5 +1,8 @@
 package ru.mashinis.view;
 
+/**
+ * Класс пока не используем. Нужен при будущем расширении системы
+ */
 public class UserView {
     public void printMenu() {
         System.out.println("Меню пользователей.\nВыберите действие:");

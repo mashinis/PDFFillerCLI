@@ -1,40 +1,26 @@
 package ru.mashinis.model.database;
 
+import ru.mashinis.config.DatabaseConfig;
 import ru.mashinis.model.Field;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class FieldModel {
-    private static final String PROPERTIES_FILE = "properties/application.properties";
-    private static String url;
-    private static String username;
-    private static String password;
+    private final String dbUrl;
+    private final String dbUsername;
+    private final String dbPassword;
 
-    static {
-        loadDatabaseProperties();
-    }
-
-    private static void loadDatabaseProperties() {
-        Properties properties = new Properties();
-        try (InputStream input = UserModel.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-            properties.load(input);
-            url = properties.getProperty("db.url");
-            username = properties.getProperty("db.username");
-            password = properties.getProperty("db.password");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public FieldModel() {
+        this.dbUrl = DatabaseConfig.getUrl();
+        this.dbUsername = DatabaseConfig.getUsername();
+        this.dbPassword = DatabaseConfig.getPassword();
     }
 
     public List<Field> getAllFields(int idForm) {
         List<Field> fields = new ArrayList<>();
         String sql = "SELECT * FROM fields WHERE form_id = ? ORDER BY id";
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, idForm);
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -57,7 +43,7 @@ public class FieldModel {
 
     public Field getFieldById(int fieldId) {
         String sql = "SELECT * FROM fields WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, fieldId);
 
@@ -82,7 +68,7 @@ public class FieldModel {
     public List<Field> getFieldsByFormId(int formId) {
         List<Field> fields = new ArrayList<>();
         String sql = "SELECT * FROM fields WHERE form_id = ? ORDER BY id";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, formId);
 

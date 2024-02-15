@@ -22,6 +22,8 @@ public class FieldController {
     private AuthModel authModel;
     private AuthView authView;
     private AuthController authController;
+    private int maxIdForm;
+    private int userPdfIdForm;
 
     public FieldController(FieldView fieldView, FieldModel fieldModel) {
         this.fieldView = fieldView;
@@ -30,12 +32,12 @@ public class FieldController {
         this.fieldValueModel = new FieldValueModel();
         this.authModel = new AuthModel();
         this.authView = new AuthView();
+        this.maxIdForm = new FormModel().getMaxIdForms();
+        this.userPdfIdForm = 0;
     }
 
     // Метод для авторизации
     public void start() {
-        Scanner scanner = new Scanner(System.in);
-
         authController = new AuthController(authModel, authView);
 
         while (true) {
@@ -65,23 +67,45 @@ public class FieldController {
                 case "\\forms": // Список всех доступных форм
                     formsList();
                     break;
-                case "\\fills": // Вывод всех полей выбранной формы
+                case "\\fields": // Вывод всех полей выбранной формы
                     try {
-                        listFields(s[1].trim());
-                        break;
+                        int i = stringToInt(s[1].trim());
+                        if (i != -1) {
+                            listFields(i);
+                            break;
+                        } else {
+                            continue;
+                        }
                     } catch (ArrayIndexOutOfBoundsException e) {
                         System.err.println("Не верный формат! Повторите ввод.");
                         continue;
                     }
                 case "\\all": // Последовательное заполнение полей
-                    fillAllField();
-                    break;
-//                case "\\edit": // Заполнить поле по его id
-//                    fillByIdField(s[1].trim());
-//                    break;
+                    try {
+                        int i = stringToInt(s[1].trim());
+                        if (i != -1) {
+                            fillAllField(i);
+                            break;
+                        } else {
+                            continue;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.err.println("Не верный формат! Повторите ввод.");
+                        continue;
+                    }
                 case "\\pdf": // Заполнить форму PDF данными из БД
-                    fillPdfForm();
-                    break;
+                    try {
+                        int i = stringToInt(s[1].trim());
+                        if (i != -1) {
+                            fillPdfForm(i);
+                            break;
+                        } else {
+                            continue;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.err.println("Не верный формат! Повторите ввод.");
+                        continue;
+                    }
                 case "\\exit":
                     scanner.close();
                     System.exit(0);
@@ -99,34 +123,73 @@ public class FieldController {
         }
     }
 
-    private void fillAllField() {
-        int maxIdForms = new FormModel().getMaxIdForms();
-        fieldValueController = new FieldValueController(fieldValueView, fieldValueModel, authController);
-        fieldValueController.sequentFillForm(maxIdForms);
-    }
-
-    /**
-     * В БД хранится числовой идентификатор последней заполненной формы
-     */
-    private void fillPdfForm() {
-        fieldValueController = new FieldValueController(fieldValueView, fieldValueModel, authController);
-        fieldValueController.fillPdfForm();
-    }
-
-    private void listFields(String s) {
+    private void fillAllField(int idForm) {
         try {
-            int i = (Integer.parseInt(s));
-            if (i < 1 || i > new FormModel().getMaxIdForms()) {
-               fieldView.displayErrorMessage("Такой формы не существует! Повторите ввод.");
+            if (idForm < 1 || idForm > maxIdForm) {
+                fieldView.displayErrorMessage("Такой формы не существует! Повторите ввод.");
+                return;
             }
-            List<Field> fields = fieldModel.getAllFields(i);
-            int count = 1;
-            for (Field field : fields) {
-                fieldView.printMessage(count++ + ". " + field.getName());
+
+            fieldValueController = new FieldValueController(fieldValueView, fieldValueModel, authController);
+            userPdfIdForm = fieldValueController.sequentFillForm(idForm);
+
+            fieldView.printMessage("Хотите заполнить PDF из введенных данных? (Да/Нет)");
+            Scanner scanner = new Scanner(System.in);
+            String input = scanner.nextLine();
+
+            if (input.toLowerCase().startsWith("да")) {
+                fillPdfForm(userPdfIdForm);
+            } else {
+                fieldView.printMessage("Не известная команда.");
             }
+
         } catch (NumberFormatException e) {
             fieldView.displayErrorMessage("Ошибка: Введено не число. Попробуйте еще раз.");
         }
+
+
+    }
+
+    /**
+     * Заполняю PDF форму из данных в БД, хранящихся под идентификатором: PDF ID Form
+     */
+    private void fillPdfForm(int pdfIdForm) {
+        boolean isPdfIdForm = fieldValueModel.isUserInstance(pdfIdForm);
+
+        if (isPdfIdForm) {
+            fieldValueController = new FieldValueController(fieldValueView, fieldValueModel, authController);
+            fieldValueController.fillPdfForm(pdfIdForm);
+        } else {
+            fieldView.displayErrorMessage("Такого идентификатора не существует! Повторите ввод.");
+        }
+    }
+
+    private void listFields(int idForm) {
+
+        if (idForm < 1 || idForm > maxIdForm) {
+            fieldView.displayErrorMessage("Такой формы не существует! Повторите ввод.");
+            return;
+        }
+
+        List<Field> fields = fieldModel.getAllFields(idForm);
+        int count = 1;
+        String nameForm = new FormModel().getNameIdForm(idForm);
+        fieldView.printMessage("\n" + nameForm + "\nСписок доступных полей:");
+        for (Field field : fields) {
+            fieldView.printMessage(count++ + ". " + field.getName());
+        }
+
         fieldView.printMessage("");
+    }
+
+    private int stringToInt(String s) {
+        try {
+            int i = Integer.parseInt(s);
+            return i;
+
+        } catch (NumberFormatException e) {
+            fieldView.displayErrorMessage("Ошибка: Введено не число. Попробуйте еще раз.");
+            return -1;
+        }
     }
 }

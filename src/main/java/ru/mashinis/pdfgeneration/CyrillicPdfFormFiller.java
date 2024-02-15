@@ -50,8 +50,6 @@ public class CyrillicPdfFormFiller {
                 } else {
                     System.out.println("Поле для заполнения не найдено!");
                 }
-
-                ;
             }
 
             // Растрировать поля формы
@@ -60,6 +58,8 @@ public class CyrillicPdfFormFiller {
             System.out.println("PDF форма успешно заполнена и сохранена в " + outputPdfPath);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+
         }
     }
 }

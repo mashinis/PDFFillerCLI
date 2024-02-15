@@ -1,10 +1,7 @@
 package ru.mashinis.model.database;
 
+import ru.mashinis.config.DatabaseConfig;
 import ru.mashinis.model.User;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,32 +9,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class UserModel {
-    private static final String PROPERTIES_FILE = "properties/application.properties";
-    private static String url;
-    private static String username;
-    private static String password;
+    private final String dbUrl;
+    private final String dbUsername;
+    private final String dbPassword;
 
-    static {
-        loadDatabaseProperties();
+    public UserModel() {
+        this.dbUrl = DatabaseConfig.getUrl();
+        this.dbUsername = DatabaseConfig.getUsername();
+        this.dbPassword = DatabaseConfig.getPassword();
     }
 
-    private static void loadDatabaseProperties() {
-        Properties properties = new Properties();
-        try (InputStream input = UserModel.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
-            properties.load(input);
-            url = properties.getProperty("db.url");
-            username = properties.getProperty("db.username");
-            password = properties.getProperty("db.password");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void saveUser(User user) {
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+    public void saveUser(User user) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
             String sql = "INSERT INTO users (user_name, user_login, password) VALUES (?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, user.getUsername());
@@ -50,9 +35,9 @@ public class UserModel {
         }
     }
 
-    public static List<User> getAllUsers() {
+    public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
             String sql = "SELECT * FROM users";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -73,9 +58,9 @@ public class UserModel {
         return users;
     }
 
-    public static User getUserById(int userId) {
+    public User getUserById(int userId) {
         String sql = "SELECT * FROM users WHERE id = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, userId);
 
@@ -98,7 +83,7 @@ public class UserModel {
 
     public boolean validateUserCredentials(String login, String password) {
         String sql = "SELECT * FROM users WHERE user_login = ? AND password = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, login);
             statement.setString(2, password);

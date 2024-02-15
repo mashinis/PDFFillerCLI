@@ -19,7 +19,6 @@ public class FieldValueController {
     private List<Field> fieldList;
     private Scanner scanner;
     private int userId;
-    private int formId;
     private int userInstanceMaxId;
 
     public FieldValueController(FieldValueView fieldValueView, FieldValueModel fieldValueModel, AuthController authController) {
@@ -32,49 +31,35 @@ public class FieldValueController {
     }
 
 
-    public void fillPdfForm() {
-        fieldValueList = fieldValueModel.getFormInstanceId(userId, userInstanceMaxId);
+    public void fillPdfForm(int pdfIdForm) {
+        fieldValueList = fieldValueModel.getFormInstanceId(userId, pdfIdForm);
         if (fieldValueList == null) {
-            fieldValueView.printMessage("Запись отсутствует!");
+            fieldValueView.printErrorMessage("Запись отсутствует!");
         } else {
             CyrillicPdfFormFiller cyrillicPdfFormFiller = new CyrillicPdfFormFiller();
             cyrillicPdfFormFiller.fillPdfForm(fieldValueList);
         }
     }
 
-    public void sequentFillForm(int maxIdForms) {
-        fieldValueView.printMessage("Выберите, какую форму будете заполнять.");
-        String input = null;
-
-        while (true) {
-            try {
-               input = scanner.nextLine();
-                formId = Integer.parseInt(input);
-
-                if (formId < 1 || formId > maxIdForms) {
-                    fieldValueView.printMessage("Такой формы не существует! Повторите ввод.");
-                } else {
-                    break;
-                }
-
-            } catch (NumberFormatException e) {
-                System.err.println("Ошибка: Введено не число. Попробуйте еще раз.");
-            }
-        }
+    public int sequentFillForm(int idForm) {
 
         FieldModel fieldModel = new FieldModel();
-        fieldList = fieldModel.getFieldsByFormId(formId);
+        fieldList = fieldModel.getFieldsByFormId(idForm);
         int count = 1;
-        int instance = userInstanceMaxId + 1;
+        int pdfIdForm = userInstanceMaxId + 1;
+
         for (Field field : fieldList) {
-            int id = field.getId();
+            int fieldId = field.getId();
             String name = field.getName();
             fieldValueView.printMessage(count + ". " + name);
-            input = scanner.nextLine();
-            fieldValueList.add(new FieldValue(input, id, userId, formId, instance));
+            String value = scanner.nextLine();
+            fieldValueList.add(new FieldValue(value, fieldId, userId, idForm, pdfIdForm));
             count++;
         }
 
         fieldValueModel.addFieldValues(fieldValueList);
+        fieldValueView.printMessage("Ваш PDF ID Form: " + pdfIdForm + "\nЗапомните его. Он потребуется для сохранения в PDF");
+
+        return pdfIdForm;
     }
 }

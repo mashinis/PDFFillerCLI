@@ -7,7 +7,6 @@ public class FieldValue {
     private int fieldId;
     private String fieldName;
     private String fieldAlias;
-
     private int userId;
     private String formName;
     private String userName;
