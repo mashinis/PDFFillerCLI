@@ -31,19 +31,19 @@ public class FieldModel {
         }
     }
 
-    public void saveField(Field field) {
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "INSERT INTO fields (field_name, field_alias, form_id) VALUES (?, ?, ?)";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, field.getName());
-                statement.setString(2, field.getAlias());
-                statement.setInt(3, field.getFormId());
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void saveField(Field field) {
+//        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+//            String sql = "INSERT INTO fields (field_name, field_alias, form_id) VALUES (?, ?, ?)";
+//            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+//                statement.setString(1, field.getName());
+//                statement.setString(2, field.getAlias());
+//                statement.setInt(3, field.getFormId());
+//                statement.executeUpdate();
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public List<Field> getAllFields() {
         List<Field> fields = new ArrayList<>();
@@ -114,5 +114,4 @@ public class FieldModel {
         }
         return fields;
     }
-
 }

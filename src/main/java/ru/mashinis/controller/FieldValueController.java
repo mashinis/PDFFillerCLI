@@ -18,12 +18,9 @@ public class FieldValueController {
     private List<FieldValue> fieldValueList;
     private List<Field> fieldList;
     private Scanner scanner;
-    private int fieldId;
     private int userId;
     private int formId;
     private int userInstanceMaxId;
-    private AuthController authController;
-    private  int instanceId;
 
     public FieldValueController(FieldValueView fieldValueView, FieldValueModel fieldValueModel, AuthController authController) {
         this.fieldValueView = fieldValueView;
@@ -45,14 +42,21 @@ public class FieldValueController {
         }
     }
 
-    public void sequentFillForm() {
+    public void sequentFillForm(int maxIdForms) {
         fieldValueView.printMessage("Выберите, какую форму будете заполнять.");
-        String input = scanner.nextLine();
+        String input = null;
 
         while (true) {
             try {
+               input = scanner.nextLine();
                 formId = Integer.parseInt(input);
-                break;
+
+                if (formId < 1 || formId > maxIdForms) {
+                    fieldValueView.printMessage("Такой формы не существует! Повторите ввод.");
+                } else {
+                    break;
+                }
+
             } catch (NumberFormatException e) {
                 System.err.println("Ошибка: Введено не число. Попробуйте еще раз.");
             }
@@ -72,5 +76,7 @@ public class FieldValueController {
         }
 
         fieldValueModel.addFieldValues(fieldValueList);
+
+        scanner.close();
     }
 }

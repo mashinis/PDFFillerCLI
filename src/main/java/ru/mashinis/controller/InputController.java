@@ -76,7 +76,7 @@ public class InputController {
                     scanner.close();
                     System.exit(0);
                 case "\\fill":
-                    fillForm();
+                    //fillForm();
                     break;
                 case "\\all":
                     sequentialFieldFilling();
@@ -102,10 +102,10 @@ public class InputController {
         }
     }
 
-    private void fillForm() {
-        fieldController = new FieldController(fieldView, fieldModel, authController);
-        fieldController.handleFieldInput();
-    }
+//    private void fillForm() {
+//        fieldController = new FieldController(fieldView, fieldModel, authController);
+//        fieldController.handleFieldInput();
+//    }
 
     private void userMenu() {
         userController = new UserController(userView, userModel);

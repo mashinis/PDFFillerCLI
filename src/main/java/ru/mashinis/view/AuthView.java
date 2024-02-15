@@ -2,7 +2,7 @@ package ru.mashinis.view;
 
 public class AuthView {
     public void displayMenu() {
-        System.out.println("Меню аутентификации.\nВыберите действие:");
+        System.out.println("Для работы с системой требуется аутентификации.\nВыберите действие:");
         System.out.println("\\login - Войти в систему");
         System.out.println("\\register - Зарегистрировать нового пользователя");
         System.out.println("\\exit - Выйти из приложения");
