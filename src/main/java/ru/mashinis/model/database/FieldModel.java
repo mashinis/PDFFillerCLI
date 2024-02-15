@@ -31,25 +31,12 @@ public class FieldModel {
         }
     }
 
-//    public void saveField(Field field) {
-//        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-//            String sql = "INSERT INTO fields (field_name, field_alias, form_id) VALUES (?, ?, ?)";
-//            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-//                statement.setString(1, field.getName());
-//                statement.setString(2, field.getAlias());
-//                statement.setInt(3, field.getFormId());
-//                statement.executeUpdate();
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    public List<Field> getAllFields() {
+    public List<Field> getAllFields(int idForm) {
         List<Field> fields = new ArrayList<>();
+        String sql = "SELECT * FROM fields WHERE form_id = ? ORDER BY id";
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            String sql = "SELECT * FROM fields ORDER BY id";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, idForm);
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
                         int id = Integer.parseInt(resultSet.getString("id"));

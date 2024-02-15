@@ -65,6 +65,14 @@ public class FieldController {
                 case "\\forms": // Список всех доступных форм
                     formsList();
                     break;
+                case "\\fills": // Вывод всех полей выбранной формы
+                    try {
+                        listFields(s[1].trim());
+                        break;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.err.println("Не верный формат! Повторите ввод.");
+                        continue;
+                    }
                 case "\\all": // Последовательное заполнение полей
                     fillAllField();
                     break;
@@ -105,8 +113,20 @@ public class FieldController {
         fieldValueController.fillPdfForm();
     }
 
-    private List<Field> listField() {
-        List<Field> list = fieldModel.getAllFields();
-        return list; // Пока не обрабатываю условие, что может быть несколько форм
+    private void listFields(String s) {
+        try {
+            int i = (Integer.parseInt(s));
+            if (i < 1 || i > new FormModel().getMaxIdForms()) {
+               fieldView.displayErrorMessage("Такой формы не существует! Повторите ввод.");
+            }
+            List<Field> fields = fieldModel.getAllFields(i);
+            int count = 1;
+            for (Field field : fields) {
+                fieldView.printMessage(count++ + ". " + field.getName());
+            }
+        } catch (NumberFormatException e) {
+            fieldView.displayErrorMessage("Ошибка: Введено не число. Попробуйте еще раз.");
+        }
+        fieldView.printMessage("");
     }
 }

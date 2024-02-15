@@ -76,7 +76,5 @@ public class FieldValueController {
         }
 
         fieldValueModel.addFieldValues(fieldValueList);
-
-        scanner.close();
     }
 }
