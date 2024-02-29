@@ -1,7 +1,5 @@
 package ru.mashinis.model;
 
-import java.util.List;
-
 public class Content {
     private int contentId;
     private int formId;

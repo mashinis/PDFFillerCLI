@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Класс с пулом подключения к БД
+ */
 public class DatabaseManager {
     private static HikariDataSource dataSource;
 

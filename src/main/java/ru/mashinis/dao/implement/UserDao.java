@@ -3,7 +3,6 @@ package ru.mashinis.dao.implement;
 import com.zaxxer.hikari.HikariDataSource;
 import ru.mashinis.dao.interfaces.Create;
 import ru.mashinis.dao.interfaces.Read;
-import ru.mashinis.dao.interfaces.dell.Dao;
 import ru.mashinis.model.User;
 
 import java.sql.Connection;
