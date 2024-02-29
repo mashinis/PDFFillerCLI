@@ -1,4 +1,4 @@
-package ru.mashinis.service;
+package ru.mashinis.dao.service;
 
 import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
@@ -34,7 +34,7 @@ public class UserService {
         String password = user.getPassword();
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         user.setPassword(hashedPassword);
-        userDao.save(user);
+        userDao.create(user);
         return true;
     }
 

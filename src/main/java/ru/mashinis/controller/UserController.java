@@ -53,15 +53,15 @@ public class UserController {
             return;
         }
 
-        int userId = Integer.parseInt(input);
-        User user = userModel.getUserById(userId);
-
-        if (user == null) {
-            view.printMessage("Нет пользователя с указанным id.");
-        } else {
-            view.printMessage("Найден пользователь с id " + userId + ":");
-            view.printMessage(user.toString());
-        }
+//        int userId = Integer.parseInt(input);
+//        User user = userModel.getUserById(userId);
+//
+//        if (user == null) {
+//            view.printMessage("Нет пользователя с указанным id.");
+//        } else {
+//            view.printMessage("Найден пользователь с id " + userId + ":");
+//            view.printMessage(user.toString());
+//        }
     }
 
     private void saveUser() {
@@ -76,21 +76,21 @@ public class UserController {
         view.printMessage("Введите пароль:");
         String password = scanner.nextLine();
 
-        User user = new User(username, login, password);
-        userModel.saveUser(user);
-        view.printMessage("Пользователь успешно сохранен.");
+//        User user = new User(username, login, password);
+//        userModel.saveUser(user);
+//        view.printMessage("Пользователь успешно сохранен.");
     }
 
     private void displayAllUsers() {
-        List<User> users = userModel.getAllUsers();
-        if (users.isEmpty()) {
-            view.printMessage("Нет пользователей в базе данных.");
-        } else {
-            view.printMessage("Список пользователей:");
-            for (User user : users) {
-                view.printMessage(user.toString());
-            }
-        }
+//        List<User> users = userModel.getAllUsers();
+//        if (users.isEmpty()) {
+//            view.printMessage("Нет пользователей в базе данных.");
+//        } else {
+//            view.printMessage("Список пользователей:");
+//            for (User user : users) {
+//                view.printMessage(user.toString());
+//            }
+//        }
     }
 
     // Вход пользователя
@@ -103,17 +103,17 @@ public class UserController {
         view.printMessage("Введите пароль:");
         String password = scanner.nextLine();
 
-        if (validateUserCredentials(login, password)) {
-            view.printMessage("Вход выполнен успешно!");
-        } else {
-            view.printMessage("Неверные логин или пароль. Попробуйте еще раз.");
-        }
+//        if (validateUserCredentials(login, password)) {
+//            view.printMessage("Вход выполнен успешно!");
+//        } else {
+//            view.printMessage("Неверные логин или пароль. Попробуйте еще раз.");
+//        }
     }
 
-    private boolean validateUserCredentials(String login, String password) {
-        // Здесь вы можете добавить логику проверки логина и пароля в вашей базе данных
-        // Например, использовать метод из UserModel для проверки существования пользователя
-        // и сопоставления введенного пароля с хэшированным паролем в базе данных.
-        return userModel.validateUserCredentials(login, password);
-    }
+//    private boolean validateUserCredentials(String login, String password) {
+//        // Здесь вы можете добавить логику проверки логина и пароля в вашей базе данных
+//        // Например, использовать метод из UserModel для проверки существования пользователя
+//        // и сопоставления введенного пароля с хэшированным паролем в базе данных.
+//        return userModel.validateUserCredentials(login, password);
+//    }
 }

@@ -1,4 +1,4 @@
-package ru.mashinis.dao;
+package ru.mashinis.dao.dell;
 
 import com.zaxxer.hikari.HikariDataSource;
 import ru.mashinis.model.FormSubmissions;

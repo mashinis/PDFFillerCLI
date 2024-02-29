@@ -1,4 +1,4 @@
-package ru.mashinis.service;
+package ru.mashinis.dao.service;
 
 import ru.mashinis.dao.dell.FieldValueDaoImpl;
 import ru.mashinis.dao.dell.FormSubmissionsDao;

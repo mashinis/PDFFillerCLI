@@ -1,8 +1,6 @@
 package ru.mashinis;
 
-import ru.mashinis.controller.FieldController;
-import ru.mashinis.model.database.FieldModel;
-import ru.mashinis.view.FieldView;
+import ru.mashinis.controller.MainController;
 
 /**
  * PDF-Forms Filler CLI
@@ -11,18 +9,17 @@ import ru.mashinis.view.FieldView;
  * но настоящая версия поддерживает только однопользовательский режим.
  * Программа имеет универсальную возможность работы с формами PDF,
  * благодаря возможности сохранения названия формы и полей для неё в базе данных, включая имя и алиас полей.
+ * Заполненная форма хранится в БД, в отдельном поле в виде json объекта.
+ * В программу заложен, но не реализован функционал сканирования PDF документа и нахождение в нем полей формы.
  * Функционал сохранения новой формы заложен, но не реализован. Для реализации функционала
  * сохранения новой формы через интерфейс приложения нужно вводить роли пользователя.
- * @version 1.00 15.02.2024
+ * @version 1.01 28.02.2024
  * @author Гильдебрант Алексей
  */
 public class MainApp {
     public static void main(String[] args) {
 
-        FieldView fieldView = new FieldView();
-        FieldModel fieldModel = new FieldModel();
-        FieldController fieldController = new FieldController(fieldView, fieldModel);
-
-        fieldController.start();
+        MainController mainController = new MainController();
+        mainController.start();
     }
 }

@@ -18,24 +18,24 @@ public class FormModel {
         this.dbPassword = DatabaseConfig.getPassword();
     }
 
-    public List<Form> getAllForm() {
-        List<Form> forms = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
-            String sql = "SELECT * FROM forms ORDER BY id";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        int id = resultSet.getInt("id");
-                        String formName = resultSet.getString("form_name");
-                        forms.add(new Form(id, formName));
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return forms;
-    }
+//    public List<Form> getAllForm() {
+//        List<Form> forms = new ArrayList<>();
+//        try (Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword)) {
+//            String sql = "SELECT * FROM forms ORDER BY id";
+//            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+//                try (ResultSet resultSet = statement.executeQuery()) {
+//                    while (resultSet.next()) {
+//                        int id = resultSet.getInt("id");
+//                        String formName = resultSet.getString("form_name");
+//                        forms.add(new Form(id, formName));
+//                    }
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return forms;
+//    }
 
     public int getMaxIdForms() {
         String sql = "SELECT MAX(id) AS max_id FROM forms";

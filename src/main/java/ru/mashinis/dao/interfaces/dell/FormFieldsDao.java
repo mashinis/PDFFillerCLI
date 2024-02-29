@@ -1,4 +1,4 @@
-package ru.mashinis.dao.interfaces;
+package ru.mashinis.dao.interfaces.dell;
 
 import java.util.List;
 

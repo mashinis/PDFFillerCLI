@@ -1,10 +1,8 @@
-package ru.mashinis.dao;
+package ru.mashinis.dao.dell;
 
 import com.zaxxer.hikari.HikariDataSource;
-import ru.mashinis.dao.interfacedao.Dao;
-import ru.mashinis.dao.interfacedao.FieldValueDao;
+import ru.mashinis.dao.interfaces.dell.FieldValueDao;
 import ru.mashinis.model.FieldValue;
-import ru.mashinis.model.Form;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -3,48 +3,37 @@ package ru.mashinis.model;
 /**
  * Объекты этого класса будут хранить JSON объекты
  */
-public class ContentFields {
-    private int field_id;
-    private String field_name;
-    private String field_alias;
+public class ContentFieldJson {
+    private int fieldId;
+    private String fieldName;
+    private String fieldAlias;
     private String value;
 
-    public ContentFields(int field_id, String field_name, String field_alias, String value) {
-        this.field_id = field_id;
-        this.field_name = field_name;
-        this.field_alias = field_alias;
+    public ContentFieldJson(int fieldId, String fieldName, String fieldAlias, String value) {
+        this.fieldId = fieldId;
+        this.fieldName = fieldName;
+        this.fieldAlias = fieldAlias;
         this.value = value;
     }
 
-    public int getField_id() {
-        return field_id;
+    public String getFieldName() {
+        return fieldName;
     }
 
-    public void setField_id(int field_id) {
-        this.field_id = field_id;
-    }
-
-    public String getField_name() {
-        return field_name;
-    }
-
-    public void setField_name(String field_name) {
-        this.field_name = field_name;
-    }
-
-    public String getField_alias() {
-        return field_alias;
-    }
-
-    public void setField_alias(String field_alias) {
-        this.field_alias = field_alias;
-    }
-
-    public String getContent() {
+    public String getValue() {
         return value;
     }
 
-    public void setContent(String content) {
+    public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return fieldId + ". " + fieldAlias + " - " + value;
+    }
+
+    public String getFieldAlias() {
+        return fieldAlias;
     }
 }

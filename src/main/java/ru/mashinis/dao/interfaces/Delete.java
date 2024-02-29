@@ -1,5 +1,5 @@
 package ru.mashinis.dao.interfaces;
 
-public interface DeleteOperation {
+public interface Delete {
     void delete(int i);
 }

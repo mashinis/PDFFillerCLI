@@ -1,39 +1,66 @@
 package ru.mashinis.model;
 
+/**
+ * Класс, представляющий пользователя.
+ */
 public class User {
-    private int userId;
-    private String username;
-    private String login;
+    private int id;
+    private String email;
     private String password;
+    private String firstName;
+    private String patronymic;
+    private String secondName;
 
-    public User(String username, String login, String password) {
-        this.username = username;
-        this.login = login;
+    /**
+     * Конструктор для создания нового пользователя без известного id.
+     *
+     * @param email      Электронная почта пользователя.
+     * @param password   Пароль пользователя.
+     * @param firstName  Имя пользователя.
+     * @param patronymic Отчество пользователя.
+     * @param secondName Фамилия пользователя.
+     */
+    public User(String email, String password, String firstName, String patronymic, String secondName) {
+        this.email = email;
         this.password = password;
+        this.firstName = firstName;
+        this.patronymic = patronymic;
+        this.secondName = secondName;
     }
 
-    public int getUserId() {
-        return userId;
+    /**
+     * Конструктор для создания пользователя с известным id.
+     *
+     * @param id         Идентификатор пользователя.
+     * @param email      Электронная почта пользователя.
+     * @param password   Пароль пользователя.
+     * @param firstName  Имя пользователя.
+     * @param patronymic Отчество пользователя.
+     * @param secondName Фамилия пользователя.
+     */
+    public User(int id, String email, String password, String firstName, String patronymic, String secondName) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.patronymic = patronymic;
+        this.secondName = secondName;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public int getId() {
+        return id;
     }
 
-    public String getUsername() {
-        return username;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getEmail() {
+        return email;
     }
 
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -44,8 +71,39 @@ public class User {
         this.password = password;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getPatronymic() {
+        return patronymic;
+    }
+
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
+    }
+
     @Override
     public String toString() {
-        return "User{userId='" + userId + "',username='" + username + "',login='" + login + "', password='" + password + "'}";
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", first_name='" + firstName + '\'' +
+                ", patronymic='" + patronymic + '\'' +
+                ", second_name='" + secondName + '\'' +
+                '}';
     }
 }

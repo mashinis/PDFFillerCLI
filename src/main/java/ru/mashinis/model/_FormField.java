@@ -3,7 +3,7 @@ package ru.mashinis.model;
 /**
  * Класс хранит поле формы
  */
-public class FormField {
+public class _FormField {
 //    private String name;
 //    private String alias;
 //    private String value;
