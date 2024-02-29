@@ -39,7 +39,7 @@ public class FieldDao implements Read<Field>{
 
     public List<Field> getAll(int formId) {
         List<Field> fieldList = new ArrayList<>();
-        String sql = "SELECT * FROM fields WHERE form_id = ? ORDER BY field_id";
+        String sql = "SELECT * FROM fields WHERE form_id = ? ORDER BY field_name";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, formId);

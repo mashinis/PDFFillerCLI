@@ -13,9 +13,7 @@ import ru.mashinis.model.ContentFieldJson;
 import ru.mashinis.model.Field;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Что делает класс:
@@ -90,6 +88,7 @@ public class CyrillicPdfFormFiller {
     // Метод сделан с заделом на будущее
     // Метод реализован не совсем верно. Все таки нужно реализовать сканирование папки pdf на наличие файлов с формами,
     // если таких форм нет в БД, то уже после этого можно загружать форму в этот класс.
+    // Нет обработки ошибки, если такая форма по такому адресу уже существует
     public List<Field> readFormAndSaveFields(int formId) {
         List<Field> fieldList = new ArrayList<>();
 
@@ -115,6 +114,8 @@ public class CyrillicPdfFormFiller {
                     fieldList.add(new Field(formId, fieldName, fieldHint));
                 }
             }
+            fieldList.sort(Comparator.comparing(Field::getFieldName));
+
             return fieldList;
 
         } catch (IOException e) {

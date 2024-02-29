@@ -219,7 +219,7 @@ public class MainController {
         FieldDao fieldDao = new FieldDao(DatabaseManager.getDataSource());
 
         String input;
-
+        // После загрузки новой формы она почему то не правильно выбирается при заполнении
         if (fields == null || fields.size() == 0) {
             fields = fieldDao.getAll(idForm);
         }
